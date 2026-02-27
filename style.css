@@ -1,8 +1,8 @@
 body {
 margin: 0;
 font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-background: #111827;
-color: #fff;
+background: #222222;
+color: #e0e0e0;
 }
 
 header {
@@ -14,7 +14,7 @@ font-size: 20px;
 }
 
 button {
-background: #2563eb;
+background: #555555;
 border: none;
 color: white;
 padding: 10px 14px;
@@ -29,11 +29,11 @@ transform: scale(0.95);
 }
 
 .secondary {
-background: #374151;
+background: #444444;
 }
 
 .danger {
-background: #dc2626;
+background: #cc3333;
 }
 
 #calendar {
@@ -44,38 +44,47 @@ padding: 16px;
 }
 
 .day {
-background: #1f2937;
+background: #333333;
 padding: 14px;
 border-radius: 14px;
 text-align: center;
-cursor: pointer;
 position: relative;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.day.saved::after {
-content: "•";
-position: absolute;
-bottom: 6px;
-right: 8px;
-color: #22c55e;
-font-size: 18px;
+.day:hover {
+transform: scale(1.05);
+background: #3d3d3d;
+}
+
+.day .info {
+background: #555555;
+padding: 2px 6px;
+border-radius: 10px;
+margin-top: 4px;
+font-size: 12px;
 }
 
 .totals {
 padding: 16px;
-background: #1f2937;
+background: #333333;
 margin: 16px;
 border-radius: 16px;
+transition: all 0.3s ease;
 }
 
 .modal {
 position: fixed;
 inset: 0;
-background: rgba(0,0,0,0.7);
+background: rgba(0,0,0,0.8);
 display: flex;
 justify-content: center;
 align-items: center;
-animation: fadeIn 0.2s ease;
+animation: fadeIn 0.3s ease;
 }
 
 .hidden {
@@ -83,12 +92,12 @@ display: none;
 }
 
 .modal-content {
-background: #1f2937;
+background: #333333;
 padding: 20px;
 border-radius: 20px;
 width: 90%;
 max-width: 400px;
-animation: slideUp 0.2s ease;
+animation: slideUp 0.3s ease;
 }
 
 label {
@@ -101,8 +110,9 @@ width: 100%;
 padding: 8px;
 border-radius: 10px;
 border: none;
-background: #374151;
+background: #555555;
 color: white;
+font-size: 16px;
 }
 
 .result {
