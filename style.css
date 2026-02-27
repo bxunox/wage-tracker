@@ -1,0 +1,127 @@
+body {
+margin: 0;
+font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+background: #111827;
+color: #fff;
+}
+
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 16px;
+font-size: 20px;
+}
+
+button {
+background: #2563eb;
+border: none;
+color: white;
+padding: 10px 14px;
+border-radius: 12px;
+font-size: 16px;
+cursor: pointer;
+transition: 0.2s;
+}
+
+button:active {
+transform: scale(0.95);
+}
+
+.secondary {
+background: #374151;
+}
+
+.danger {
+background: #dc2626;
+}
+
+#calendar {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 8px;
+padding: 16px;
+}
+
+.day {
+background: #1f2937;
+padding: 14px;
+border-radius: 14px;
+text-align: center;
+cursor: pointer;
+position: relative;
+}
+
+.day.saved::after {
+content: "•";
+position: absolute;
+bottom: 6px;
+right: 8px;
+color: #22c55e;
+font-size: 18px;
+}
+
+.totals {
+padding: 16px;
+background: #1f2937;
+margin: 16px;
+border-radius: 16px;
+}
+
+.modal {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+animation: fadeIn 0.2s ease;
+}
+
+.hidden {
+display: none;
+}
+
+.modal-content {
+background: #1f2937;
+padding: 20px;
+border-radius: 20px;
+width: 90%;
+max-width: 400px;
+animation: slideUp 0.2s ease;
+}
+
+label {
+display: block;
+margin-bottom: 10px;
+}
+
+input {
+width: 100%;
+padding: 8px;
+border-radius: 10px;
+border: none;
+background: #374151;
+color: white;
+}
+
+.result {
+margin-top: 10px;
+font-weight: bold;
+}
+
+.modal-buttons {
+display: flex;
+justify-content: space-between;
+margin-top: 15px;
+}
+
+@keyframes fadeIn {
+from { opacity: 0 }
+to { opacity: 1 }
+}
+
+@keyframes slideUp {
+from { transform: translateY(20px); opacity: 0 }
+to { transform: translateY(0); opacity: 1 }
+}
