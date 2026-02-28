@@ -14,6 +14,7 @@ const modalContent = entryModal.querySelector(".modal-content");
 const entryDateEl = document.getElementById("entryDate");
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
+const hourlyWage = document.getElementById("hourlyWage");
 const workedHours = document.getElementById("workedHours");
 const dailyEarnings = document.getElementById("dailyEarnings");
 
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ================= RENDER CALENDAR ================= */
 
 function renderCalendar(animated = false) {
+
   if (animated) {
     calendarEl.style.opacity = "0";
     calendarEl.style.transform = "translateY(10px)";
@@ -63,6 +65,7 @@ function renderCalendar(animated = false) {
   }
 
   for (let d = 1; d <= daysInMonth; d++) {
+
     const key = `${year}-${month + 1}-${d}`;
     const day = document.createElement("div");
     day.className = "day";
@@ -75,10 +78,10 @@ function renderCalendar(animated = false) {
     const entry = entries[key];
 
     if (entry) {
+
       if (entry.unavailable) {
         const badge = document.createElement("div");
         badge.className = "badge badge-unavailable";
-        badge.textContent = "Unavailable";
         day.appendChild(badge);
       } else {
         const badge = document.createElement("div");
@@ -97,16 +100,26 @@ function renderCalendar(animated = false) {
 /* ================= OPEN ENTRY ================= */
 
 function openEntry(key) {
+
   selectedDateKey = key;
   entryModal.classList.remove("hidden");
 
   const [y, m, d] = key.split("-");
   entryDateEl.textContent = `${d}.${m}.${y}`;
 
-  breakEnabled = true;
+  const date = new Date(y, m - 1, d);
 
   startTime.value = "16:00";
   endTime.value = "22:00";
+
+  breakEnabled = true;
+
+  // SATURDAY BONUS (6 = Saturday)
+  if (date.getDay() === 6) {
+    hourlyWage.value = "9.23";
+  } else {
+    hourlyWage.value = "6.60";
+  }
 
   calculate();
 }
@@ -114,12 +127,8 @@ function openEntry(key) {
 /* ================= CALCULATE ================= */
 
 function calculate() {
+
   if (!startTime.value || !endTime.value) return;
-
-  const [y, m, d] = selectedDateKey.split("-");
-  const date = new Date(y, m - 1, d);
-
-  const hourly = (date.getDay() === 0) ? 9.23 : 6.6; // Sunday bonus
 
   const start = new Date(`1970-01-01T${startTime.value}`);
   const end = new Date(`1970-01-01T${endTime.value}`);
@@ -134,24 +143,29 @@ function calculate() {
 
   workedHours.textContent = diff.toFixed(2);
 
-  const pay = diff * hourly;
+  const pay = diff * parseFloat(hourlyWage.value || 0);
   dailyEarnings.textContent = pay.toFixed(2) + "€";
 }
 
-/* ================= BREAK TOGGLE ================= */
+[startTime, endTime, hourlyWage].forEach(el => el.oninput = calculate);
 
-document.addEventListener("click", (e) => {
-  if (e.target.id === "breakToggle") {
-    breakEnabled = !breakEnabled;
+/* ================= BREAK CHECKBOX ================= */
+
+const breakCheckbox = document.getElementById("breakCheckbox");
+
+if (breakCheckbox) {
+  breakCheckbox.checked = true;
+
+  breakCheckbox.onchange = () => {
+    breakEnabled = breakCheckbox.checked;
     calculate();
-  }
-});
-
-[startTime, endTime].forEach(el => el.oninput = calculate);
+  };
+}
 
 /* ================= SAVE ================= */
 
 saveEntryBtn.onclick = () => {
+
   const entries = getEntries();
 
   entries[selectedDateKey] = {
@@ -168,8 +182,10 @@ saveEntryBtn.onclick = () => {
 /* ================= UNAVAILABLE ================= */
 
 unavailableEntryBtn.onclick = () => {
+
   const entries = getEntries();
   entries[selectedDateKey] = { unavailable: true };
+
   saveEntries(entries);
   renderCalendar();
   updateTotals();
@@ -179,8 +195,10 @@ unavailableEntryBtn.onclick = () => {
 /* ================= DELETE ================= */
 
 deleteEntryBtn.onclick = () => {
+
   const entries = getEntries();
   delete entries[selectedDateKey];
+
   saveEntries(entries);
   renderCalendar();
   updateTotals();
@@ -190,6 +208,7 @@ deleteEntryBtn.onclick = () => {
 /* ================= CLOSE ================= */
 
 function closeModalSmooth() {
+
   entryModal.classList.add("closing");
   modalContent.classList.add("closing");
 
@@ -205,6 +224,7 @@ closeModalBtn.onclick = closeModalSmooth;
 /* ================= TOTALS ================= */
 
 function updateTotals() {
+
   const entries = getEntries();
   let totalH = 0;
   let totalP = 0;
@@ -213,8 +233,11 @@ function updateTotals() {
   const month = currentDate.getMonth() + 1;
 
   for (let key in entries) {
+
     if (key.startsWith(`${year}-${month}`)) {
+
       const e = entries[key];
+
       if (!e.unavailable) {
         totalH += e.hoursWorked || 0;
         totalP += e.pay || 0;
