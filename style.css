@@ -172,3 +172,22 @@ to { opacity: 1; }
 from { transform: translateY(20px); opacity: 0; }
 to { transform: translateY(0); opacity: 1; }
 }
+
+/* MODAL EXIT ANIMATION */
+.modal.closing {
+animation: fadeOut 0.2s ease forwards;
+}
+
+.modal-content.closing {
+animation: slideDown 0.2s ease forwards;
+}
+
+@keyframes fadeOut {
+from { opacity: 1; }
+to { opacity: 0; }
+}
+
+@keyframes slideDown {
+from { transform: translateY(0); opacity: 1; }
+to { transform: translateY(20px); opacity: 0; }
+}

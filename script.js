@@ -9,6 +9,8 @@ const totalHoursEl = document.getElementById("totalHours");
 const totalEarningsEl = document.getElementById("totalEarnings");
 
 const entryModal = document.getElementById("entryModal");
+const modalContent = entryModal.querySelector(".modal-content");
+
 const entryDateEl = document.getElementById("entryDate");
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
@@ -16,6 +18,7 @@ const breakTime = document.getElementById("breakTime");
 const hourlyWage = document.getElementById("hourlyWage");
 const workedHours = document.getElementById("workedHours");
 const dailyEarnings = document.getElementById("dailyEarnings");
+
 const saveEntryBtn = document.getElementById("saveEntry");
 const deleteEntryBtn = document.getElementById("deleteEntry");
 const unavailableEntryBtn = document.getElementById("unavailableEntry");
@@ -25,152 +28,200 @@ let currentDate = new Date();
 let selectedDateKey = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-renderCalendar();
-updateTotals();
+  renderCalendar();
+  updateTotals();
 });
 
+/* -------------------- RENDER CALENDAR -------------------- */
+
 function renderCalendar() {
-calendarEl.innerHTML = "";
+  calendarEl.innerHTML = "";
 
-const year = currentDate.getFullYear();
-const month = currentDate.getMonth();
-monthLabel.textContent =
-currentDate.toLocaleString("default", { month: "long", year: "numeric" });
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
-const daysInMonth = new Date(year, month + 1, 0).getDate();
-const entries = getEntries();
+  monthLabel.textContent =
+    currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
-for (let i = 0; i < firstDay; i++)
-calendarEl.appendChild(document.createElement("div"));
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Monday first
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const entries = getEntries();
 
-for (let d = 1; d <= daysInMonth; d++) {
-const key = `${year}-${month+1}-${d}`;
-const day = document.createElement("div");
-day.className = "day";
+  for (let i = 0; i < firstDay; i++) {
+    calendarEl.appendChild(document.createElement("div"));
+  }
 
-const number = document.createElement("div");
-number.className = "day-number";
-number.textContent = d;
-day.appendChild(number);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${year}-${month + 1}-${d}`;
+    const day = document.createElement("div");
+    day.className = "day";
 
-const entry = entries[key];
+    const number = document.createElement("div");
+    number.className = "day-number";
+    number.textContent = d;
+    day.appendChild(number);
 
-if (entry) {
-if (entry.unavailable) {
-const badge = document.createElement("div");
-badge.className = "badge badge-unavailable";
-day.appendChild(badge);
-} else {
-const badge = document.createElement("div");
-badge.className = "badge badge-shift";
-badge.innerHTML =
-`${entry.hoursWorked.toFixed(2)}h<br>€${entry.pay.toFixed(2)}`;
-day.appendChild(badge);
+    const entry = entries[key];
+
+    if (entry) {
+      if (entry.unavailable) {
+        const badge = document.createElement("div");
+        badge.className = "badge badge-unavailable";
+        day.appendChild(badge);
+      } else {
+        const badge = document.createElement("div");
+        badge.className = "badge badge-shift";
+        badge.innerHTML =
+          `${entry.hoursWorked.toFixed(2)}h<br>€${entry.pay.toFixed(2)}`;
+        day.appendChild(badge);
+      }
+    }
+
+    day.onclick = () => openEntry(key);
+    calendarEl.appendChild(day);
+  }
 }
-}
 
-day.onclick = () => openEntry(key);
-calendarEl.appendChild(day);
-}
-}
+/* -------------------- OPEN ENTRY -------------------- */
 
 function openEntry(key) {
-selectedDateKey = key;
-entryModal.classList.remove("hidden");
+  selectedDateKey = key;
+  entryModal.classList.remove("hidden");
 
-const [y,m,d] = key.split("-");
-entryDateEl.textContent = `${d}.${m}.${y}`;
+  const [y, m, d] = key.split("-");
+  entryDateEl.textContent = `${d}.${m}.${y}`;
 
-const date = new Date(y, m-1, d);
+  const date = new Date(y, m - 1, d);
 
-startTime.value = "16:00";
-endTime.value = "22:00";
-breakTime.value = 30;
-hourlyWage.value = (date.getDay() === 6) ? 9.23 : 6.6;
+  startTime.value = "16:00";
+  endTime.value = "22:00";
+  breakTime.value = 30;
 
-calculate();
+  // Saturday = 6
+  hourlyWage.value = (date.getDay() === 6) ? 9.23 : 6.6;
+
+  calculate();
 }
+
+/* -------------------- CALCULATE -------------------- */
 
 function calculate() {
-if (!startTime.value || !endTime.value) return;
+  if (!startTime.value || !endTime.value) return;
 
-const start = new Date(`1970-01-01T${startTime.value}`);
-const end = new Date(`1970-01-01T${endTime.value}`);
-let diff = (end - start)/1000/60/60 - breakTime.value/60;
-if (diff < 0) diff = 0;
+  const start = new Date(`1970-01-01T${startTime.value}`);
+  const end = new Date(`1970-01-01T${endTime.value}`);
 
-workedHours.textContent = diff.toFixed(2);
-dailyEarnings.textContent =
-"€" + (diff * parseFloat(hourlyWage.value)).toFixed(2);
+  let diff = (end - start) / 1000 / 60 / 60 - breakTime.value / 60;
+  if (diff < 0) diff = 0;
+
+  workedHours.textContent = diff.toFixed(2);
+
+  const pay = diff * parseFloat(hourlyWage.value || 0);
+  dailyEarnings.textContent = "€" + pay.toFixed(2);
 }
 
-[startTime,endTime,breakTime,hourlyWage]
-.forEach(el => el.oninput = calculate);
+[startTime, endTime, breakTime, hourlyWage]
+  .forEach(el => el.oninput = calculate);
+
+/* -------------------- SMOOTH CLOSE -------------------- */
+
+function closeModalSmooth(callback) {
+  entryModal.classList.add("closing");
+  modalContent.classList.add("closing");
+
+  setTimeout(() => {
+    entryModal.classList.add("hidden");
+    entryModal.classList.remove("closing");
+    modalContent.classList.remove("closing");
+
+    if (callback) callback();
+  }, 200);
+}
+
+/* -------------------- SAVE -------------------- */
 
 saveEntryBtn.onclick = () => {
-const entries = getEntries();
-entries[selectedDateKey] = {
-hoursWorked: parseFloat(workedHours.textContent),
-pay: parseFloat(dailyEarnings.textContent.replace("€",""))
+  const entries = getEntries();
+
+  entries[selectedDateKey] = {
+    hoursWorked: parseFloat(workedHours.textContent),
+    pay: parseFloat(dailyEarnings.textContent.replace("€", ""))
+  };
+
+  saveEntries(entries);
+
+  closeModalSmooth(() => {
+    renderCalendar();
+    updateTotals();
+  });
 };
-saveEntries(entries);
-entryModal.classList.add("hidden");
-renderCalendar();
-updateTotals();
-};
+
+/* -------------------- UNAVAILABLE -------------------- */
 
 unavailableEntryBtn.onclick = () => {
-const entries = getEntries();
-entries[selectedDateKey] = { unavailable: true };
-saveEntries(entries);
-entryModal.classList.add("hidden");
-renderCalendar();
-updateTotals();
+  const entries = getEntries();
+  entries[selectedDateKey] = { unavailable: true };
+  saveEntries(entries);
+
+  closeModalSmooth(() => {
+    renderCalendar();
+    updateTotals();
+  });
 };
+
+/* -------------------- DELETE -------------------- */
 
 deleteEntryBtn.onclick = () => {
-const entries = getEntries();
-delete entries[selectedDateKey];
-saveEntries(entries);
-entryModal.classList.add("hidden");
-renderCalendar();
-updateTotals();
+  const entries = getEntries();
+  delete entries[selectedDateKey];
+  saveEntries(entries);
+
+  closeModalSmooth(() => {
+    renderCalendar();
+    updateTotals();
+  });
 };
+
+/* -------------------- CLOSE BUTTON -------------------- */
 
 closeModalBtn.onclick = () => {
-entryModal.classList.add("hidden");
+  closeModalSmooth();
 };
 
+/* -------------------- TOTALS -------------------- */
+
 function updateTotals() {
-const entries = getEntries();
-let totalH = 0, totalP = 0;
+  const entries = getEntries();
+  let totalH = 0;
+  let totalP = 0;
 
-const year = currentDate.getFullYear();
-const month = currentDate.getMonth()+1;
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
 
-for (let key in entries) {
-if (key.startsWith(`${year}-${month}`)) {
-const e = entries[key];
-if (!e.unavailable) {
-totalH += e.hoursWorked || 0;
-totalP += e.pay || 0;
-}
-}
+  for (let key in entries) {
+    if (key.startsWith(`${year}-${month}`)) {
+      const e = entries[key];
+      if (!e.unavailable) {
+        totalH += e.hoursWorked || 0;
+        totalP += e.pay || 0;
+      }
+    }
+  }
+
+  totalHoursEl.textContent = totalH.toFixed(2);
+  totalEarningsEl.textContent = "€" + totalP.toFixed(2);
 }
 
-totalHoursEl.textContent = totalH.toFixed(2);
-totalEarningsEl.textContent = "€" + totalP.toFixed(2);
-}
+/* -------------------- MONTH NAVIGATION -------------------- */
 
 prevMonth.onclick = () => {
-currentDate.setMonth(currentDate.getMonth()-1);
-renderCalendar();
-updateTotals();
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+  updateTotals();
 };
 
 nextMonth.onclick = () => {
-currentDate.setMonth(currentDate.getMonth()+1);
-renderCalendar();
-updateTotals();
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+  updateTotals();
 };
