@@ -68,10 +68,30 @@ font-size: 14px;
 margin-bottom: 3px;
 }
 
-.day .info {
+/* SHIFT / STATUS BADGE */
+.badge {
+padding: 4px 6px;
+border-radius: 8px;
 font-size: 10px;
 line-height: 1.2;
 text-align: center;
+margin-top: 4px;
+min-width: 38px;
+}
+
+/* Normal shift background */
+.badge-shift {
+background: #3a3a3a; /* slightly lighter than day */
+color: #e5e5e5;
+}
+
+/* Unavailable indicator */
+.badge-unavailable {
+background: #c62828;
+height: 12px;
+width: 60%;
+margin-top: 8px;
+border-radius: 8px;
 }
 
 /* TOTALS */
@@ -99,7 +119,7 @@ transform: scale(0.96);
 
 .secondary { background: #3a3a3a; }
 .danger { background: #c62828; }        /* delete red */
-.danger-dark { background: #7a1f1f; }   /* unavailable darker */
+.danger-dark { background: #3a3a3a; }   /* unavailable darker */
 #saveEntry { background: #2e7d32; }
 
 /* MODAL */

@@ -57,8 +57,21 @@ day.appendChild(number);
 const entry = entries[key];
 
 if (entry) {
-const info = document.createElement("div");
-info.className = "info";
+
+if (entry.unavailable) {
+const badge = document.createElement("div");
+badge.className = "badge badge-unavailable";
+day.appendChild(badge);
+
+} else {
+const badge = document.createElement("div");
+badge.className = "badge badge-shift";
+badge.innerHTML =
+`${entry.hoursWorked.toFixed(2)}h<br>€${entry.pay.toFixed(2)}`;
+day.appendChild(badge);
+}
+
+}
 
 if (entry.unavailable) {
 info.style.color = "#ff4d4d";
@@ -73,7 +86,6 @@ day.appendChild(info);
 
 day.onclick = () => openEntry(key);
 calendarEl.appendChild(day);
-}
 }
 
 function openEntry(key) {
