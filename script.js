@@ -14,8 +14,6 @@ const modalContent = entryModal.querySelector(".modal-content");
 const entryDateEl = document.getElementById("entryDate");
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
-const breakToggle = document.getElementById("breakToggle");
-const hourlyWage = document.getElementById("hourlyWage");
 const workedHours = document.getElementById("workedHours");
 const dailyEarnings = document.getElementById("dailyEarnings");
 
@@ -26,17 +24,33 @@ const closeModalBtn = document.getElementById("closeModal");
 
 let currentDate = new Date();
 let selectedDateKey = null;
+let breakEnabled = true;
 
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
   updateTotals();
 });
 
-function renderCalendar() {
+/* ================= RENDER CALENDAR ================= */
+
+function renderCalendar(animated = false) {
+  if (animated) {
+    calendarEl.style.opacity = "0";
+    calendarEl.style.transform = "translateY(10px)";
+    setTimeout(() => {
+      renderCalendar();
+      calendarEl.style.transition = "0.25s ease";
+      calendarEl.style.opacity = "1";
+      calendarEl.style.transform = "translateY(0)";
+    }, 150);
+    return;
+  }
+
   calendarEl.innerHTML = "";
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
   monthLabel.textContent =
     currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
@@ -64,6 +78,7 @@ function renderCalendar() {
       if (entry.unavailable) {
         const badge = document.createElement("div");
         badge.className = "badge badge-unavailable";
+        badge.textContent = "Unavailable";
         day.appendChild(badge);
       } else {
         const badge = document.createElement("div");
@@ -79,6 +94,8 @@ function renderCalendar() {
   }
 }
 
+/* ================= OPEN ENTRY ================= */
+
 function openEntry(key) {
   selectedDateKey = key;
   entryModal.classList.remove("hidden");
@@ -86,53 +103,53 @@ function openEntry(key) {
   const [y, m, d] = key.split("-");
   entryDateEl.textContent = `${d}.${m}.${y}`;
 
-  const date = new Date(y, m - 1, d);
+  breakEnabled = true;
 
   startTime.value = "16:00";
   endTime.value = "22:00";
-  breakToggle.checked = true;
-  hourlyWage.value = (date.getDay() === 0) ? 9.23 : 6.6;
 
   calculate();
 }
 
+/* ================= CALCULATE ================= */
+
 function calculate() {
   if (!startTime.value || !endTime.value) return;
+
+  const [y, m, d] = selectedDateKey.split("-");
+  const date = new Date(y, m - 1, d);
+
+  const hourly = (date.getDay() === 0) ? 9.23 : 6.6; // Sunday bonus
 
   const start = new Date(`1970-01-01T${startTime.value}`);
   const end = new Date(`1970-01-01T${endTime.value}`);
 
-  let hours = (end - start) / 1000 / 60 / 60;
-  if (hours < 0) hours = 0;
+  let diff = (end - start) / 1000 / 60 / 60;
 
-  const [y, m, d] = selectedDateKey.split("-");
-  const date = new Date(y, m - 1, d);
-  const wage = (date.getDay() === 0) ? 9.23 : 6.6;
-
-  let pay = hours * wage;
-
-  if (breakToggle.checked) {
-    pay -= wage * 0.5;
+  if (breakEnabled) {
+    diff -= 0.5;
   }
 
-  workedHours.textContent = hours.toFixed(2);
+  if (diff < 0) diff = 0;
+
+  workedHours.textContent = diff.toFixed(2);
+
+  const pay = diff * hourly;
   dailyEarnings.textContent = pay.toFixed(2) + "€";
 }
 
-[startTime, endTime, breakToggle].forEach(el =>
-  el.oninput = calculate()
-);
+/* ================= BREAK TOGGLE ================= */
 
-function closeModalSmooth() {
-  entryModal.classList.add("closing");
-  modalContent.classList.add("closing");
+document.addEventListener("click", (e) => {
+  if (e.target.id === "breakToggle") {
+    breakEnabled = !breakEnabled;
+    calculate();
+  }
+});
 
-  setTimeout(() => {
-    entryModal.classList.add("hidden");
-    entryModal.classList.remove("closing");
-    modalContent.classList.remove("closing");
-  }, 200);
-}
+[startTime, endTime].forEach(el => el.oninput = calculate);
+
+/* ================= SAVE ================= */
 
 saveEntryBtn.onclick = () => {
   const entries = getEntries();
@@ -148,6 +165,8 @@ saveEntryBtn.onclick = () => {
   closeModalSmooth();
 };
 
+/* ================= UNAVAILABLE ================= */
+
 unavailableEntryBtn.onclick = () => {
   const entries = getEntries();
   entries[selectedDateKey] = { unavailable: true };
@@ -156,6 +175,8 @@ unavailableEntryBtn.onclick = () => {
   updateTotals();
   closeModalSmooth();
 };
+
+/* ================= DELETE ================= */
 
 deleteEntryBtn.onclick = () => {
   const entries = getEntries();
@@ -166,7 +187,22 @@ deleteEntryBtn.onclick = () => {
   closeModalSmooth();
 };
 
-closeModalBtn.onclick = () => closeModalSmooth();
+/* ================= CLOSE ================= */
+
+function closeModalSmooth() {
+  entryModal.classList.add("closing");
+  modalContent.classList.add("closing");
+
+  setTimeout(() => {
+    entryModal.classList.add("hidden");
+    entryModal.classList.remove("closing");
+    modalContent.classList.remove("closing");
+  }, 200);
+}
+
+closeModalBtn.onclick = closeModalSmooth;
+
+/* ================= TOTALS ================= */
 
 function updateTotals() {
   const entries = getEntries();
@@ -190,25 +226,16 @@ function updateTotals() {
   totalEarningsEl.textContent = totalP.toFixed(2) + "€";
 }
 
-prevMonth.onclick = () => animateMonth(-1);
-nextMonth.onclick = () => animateMonth(1);
+/* ================= MONTH NAVIGATION ================= */
 
-function animateMonth(direction) {
-  calendarEl.style.opacity = "0";
-  calendarEl.style.transform = `translateX(${direction * 20}px)`;
+prevMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar(true);
+  updateTotals();
+};
 
-  setTimeout(() => {
-    currentDate.setMonth(currentDate.getMonth() + direction);
-    renderCalendar();
-    updateTotals();
-
-    calendarEl.style.transition = "none";
-    calendarEl.style.transform = `translateX(${-direction * 20}px)`;
-
-    requestAnimationFrame(() => {
-      calendarEl.style.transition = "all 0.25s ease";
-      calendarEl.style.opacity = "1";
-      calendarEl.style.transform = "translateX(0)";
-    });
-  }, 120);
-}
+nextMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar(true);
+  updateTotals();
+};
