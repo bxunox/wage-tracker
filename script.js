@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTotals();
 });
 
-/* -------------------- RENDER CALENDAR -------------------- */
+/* ================= RENDER CALENDAR ================= */
 
 function renderCalendar() {
   calendarEl.innerHTML = "";
@@ -82,7 +82,7 @@ function renderCalendar() {
   }
 }
 
-/* -------------------- OPEN ENTRY -------------------- */
+/* ================= OPEN ENTRY ================= */
 
 function openEntry(key) {
   selectedDateKey = key;
@@ -93,17 +93,16 @@ function openEntry(key) {
 
   const date = new Date(y, m - 1, d);
 
+  // Default values
   startTime.value = "16:00";
   endTime.value = "22:00";
   breakTime.value = 30;
-
-  // Saturday = 6
   hourlyWage.value = (date.getDay() === 6) ? 9.23 : 6.6;
 
   calculate();
 }
 
-/* -------------------- CALCULATE -------------------- */
+/* ================= CALCULATE ================= */
 
 function calculate() {
   if (!startTime.value || !endTime.value) return;
@@ -123,9 +122,28 @@ function calculate() {
 [startTime, endTime, breakTime, hourlyWage]
   .forEach(el => el.oninput = calculate);
 
-/* -------------------- SMOOTH CLOSE -------------------- */
+/* ================= DAY POP ANIMATION ================= */
 
-function closeModalSmooth(callback) {
+function animateUpdatedDay() {
+  const [y, m, d] = selectedDateKey.split("-");
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+
+  if (parseInt(y) === year && parseInt(m) === month) {
+    const days = document.querySelectorAll(".day");
+
+    days.forEach(day => {
+      if (day.querySelector(".day-number")?.textContent === d) {
+        day.classList.add("pop");
+        setTimeout(() => day.classList.remove("pop"), 250);
+      }
+    });
+  }
+}
+
+/* ================= SMOOTH CLOSE ================= */
+
+function closeModalSmooth() {
   entryModal.classList.add("closing");
   modalContent.classList.add("closing");
 
@@ -133,12 +151,10 @@ function closeModalSmooth(callback) {
     entryModal.classList.add("hidden");
     entryModal.classList.remove("closing");
     modalContent.classList.remove("closing");
-
-    if (callback) callback();
   }, 200);
 }
 
-/* -------------------- SAVE -------------------- */
+/* ================= SAVE ================= */
 
 saveEntryBtn.onclick = () => {
   const entries = getEntries();
@@ -150,45 +166,48 @@ saveEntryBtn.onclick = () => {
 
   saveEntries(entries);
 
-  closeModalSmooth(() => {
-    renderCalendar();
-    updateTotals();
-  });
+  renderCalendar();
+  updateTotals();
+  animateUpdatedDay();
+
+  closeModalSmooth();
 };
 
-/* -------------------- UNAVAILABLE -------------------- */
+/* ================= UNAVAILABLE ================= */
 
 unavailableEntryBtn.onclick = () => {
   const entries = getEntries();
   entries[selectedDateKey] = { unavailable: true };
   saveEntries(entries);
 
-  closeModalSmooth(() => {
-    renderCalendar();
-    updateTotals();
-  });
+  renderCalendar();
+  updateTotals();
+  animateUpdatedDay();
+
+  closeModalSmooth();
 };
 
-/* -------------------- DELETE -------------------- */
+/* ================= DELETE ================= */
 
 deleteEntryBtn.onclick = () => {
   const entries = getEntries();
   delete entries[selectedDateKey];
   saveEntries(entries);
 
-  closeModalSmooth(() => {
-    renderCalendar();
-    updateTotals();
-  });
+  renderCalendar();
+  updateTotals();
+  animateUpdatedDay();
+
+  closeModalSmooth();
 };
 
-/* -------------------- CLOSE BUTTON -------------------- */
+/* ================= CLOSE BUTTON ================= */
 
 closeModalBtn.onclick = () => {
   closeModalSmooth();
 };
 
-/* -------------------- TOTALS -------------------- */
+/* ================= TOTALS ================= */
 
 function updateTotals() {
   const entries = getEntries();
@@ -212,7 +231,7 @@ function updateTotals() {
   totalEarningsEl.textContent = "€" + totalP.toFixed(2);
 }
 
-/* -------------------- MONTH NAVIGATION -------------------- */
+/* ================= MONTH NAVIGATION ================= */
 
 prevMonth.onclick = () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
