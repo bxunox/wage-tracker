@@ -14,7 +14,7 @@ const modalContent = entryModal.querySelector(".modal-content");
 const entryDateEl = document.getElementById("entryDate");
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
-const breakTime = document.getElementById("breakTime");
+const breakToggle = document.getElementById("breakToggle");
 const hourlyWage = document.getElementById("hourlyWage");
 const workedHours = document.getElementById("workedHours");
 const dailyEarnings = document.getElementById("dailyEarnings");
@@ -32,18 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTotals();
 });
 
-/* ================= RENDER CALENDAR ================= */
-
 function renderCalendar() {
   calendarEl.innerHTML = "";
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
   monthLabel.textContent =
     currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
-  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Monday first
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const entries = getEntries();
 
@@ -72,7 +69,7 @@ function renderCalendar() {
         const badge = document.createElement("div");
         badge.className = "badge badge-shift";
         badge.innerHTML =
-          `${entry.hoursWorked.toFixed(2)}h<br>€${entry.pay.toFixed(2)}`;
+          `${entry.hoursWorked.toFixed(2)}h<br>${entry.pay.toFixed(2)}€`;
         day.appendChild(badge);
       }
     }
@@ -81,8 +78,6 @@ function renderCalendar() {
     calendarEl.appendChild(day);
   }
 }
-
-/* ================= OPEN ENTRY ================= */
 
 function openEntry(key) {
   selectedDateKey = key;
@@ -93,16 +88,13 @@ function openEntry(key) {
 
   const date = new Date(y, m - 1, d);
 
-  // Default values
   startTime.value = "16:00";
   endTime.value = "22:00";
-  breakTime.value = 30;
-  hourlyWage.value = (date.getDay() === 6) ? 9.23 : 6.6;
+  breakToggle.checked = true;
+  hourlyWage.value = (date.getDay() === 0) ? 9.23 : 6.6;
 
   calculate();
 }
-
-/* ================= CALCULATE ================= */
 
 function calculate() {
   if (!startTime.value || !endTime.value) return;
@@ -110,38 +102,26 @@ function calculate() {
   const start = new Date(`1970-01-01T${startTime.value}`);
   const end = new Date(`1970-01-01T${endTime.value}`);
 
-  let diff = (end - start) / 1000 / 60 / 60 - breakTime.value / 60;
-  if (diff < 0) diff = 0;
+  let hours = (end - start) / 1000 / 60 / 60;
+  if (hours < 0) hours = 0;
 
-  workedHours.textContent = diff.toFixed(2);
-
-  const pay = diff * parseFloat(hourlyWage.value || 0);
-  dailyEarnings.textContent = "€" + pay.toFixed(2);
-}
-
-[startTime, endTime, breakTime, hourlyWage]
-  .forEach(el => el.oninput = calculate);
-
-/* ================= DAY POP ANIMATION ================= */
-
-function animateUpdatedDay() {
   const [y, m, d] = selectedDateKey.split("-");
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
+  const date = new Date(y, m - 1, d);
+  const wage = (date.getDay() === 0) ? 9.23 : 6.6;
 
-  if (parseInt(y) === year && parseInt(m) === month) {
-    const days = document.querySelectorAll(".day");
+  let pay = hours * wage;
 
-    days.forEach(day => {
-      if (day.querySelector(".day-number")?.textContent === d) {
-        day.classList.add("pop");
-        setTimeout(() => day.classList.remove("pop"), 250);
-      }
-    });
+  if (breakToggle.checked) {
+    pay -= wage * 0.5;
   }
+
+  workedHours.textContent = hours.toFixed(2);
+  dailyEarnings.textContent = pay.toFixed(2) + "€";
 }
 
-/* ================= SMOOTH CLOSE ================= */
+[startTime, endTime, breakToggle].forEach(el =>
+  el.oninput = calculate()
+);
 
 function closeModalSmooth() {
   entryModal.classList.add("closing");
@@ -154,8 +134,6 @@ function closeModalSmooth() {
   }, 200);
 }
 
-/* ================= SAVE ================= */
-
 saveEntryBtn.onclick = () => {
   const entries = getEntries();
 
@@ -165,49 +143,30 @@ saveEntryBtn.onclick = () => {
   };
 
   saveEntries(entries);
-
   renderCalendar();
   updateTotals();
-  animateUpdatedDay();
-
   closeModalSmooth();
 };
-
-/* ================= UNAVAILABLE ================= */
 
 unavailableEntryBtn.onclick = () => {
   const entries = getEntries();
   entries[selectedDateKey] = { unavailable: true };
   saveEntries(entries);
-
   renderCalendar();
   updateTotals();
-  animateUpdatedDay();
-
   closeModalSmooth();
 };
-
-/* ================= DELETE ================= */
 
 deleteEntryBtn.onclick = () => {
   const entries = getEntries();
   delete entries[selectedDateKey];
   saveEntries(entries);
-
   renderCalendar();
   updateTotals();
-  animateUpdatedDay();
-
   closeModalSmooth();
 };
 
-/* ================= CLOSE BUTTON ================= */
-
-closeModalBtn.onclick = () => {
-  closeModalSmooth();
-};
-
-/* ================= TOTALS ================= */
+closeModalBtn.onclick = () => closeModalSmooth();
 
 function updateTotals() {
   const entries = getEntries();
@@ -228,19 +187,28 @@ function updateTotals() {
   }
 
   totalHoursEl.textContent = totalH.toFixed(2);
-  totalEarningsEl.textContent = "€" + totalP.toFixed(2);
+  totalEarningsEl.textContent = totalP.toFixed(2) + "€";
 }
 
-/* ================= MONTH NAVIGATION ================= */
+prevMonth.onclick = () => animateMonth(-1);
+nextMonth.onclick = () => animateMonth(1);
 
-prevMonth.onclick = () => {
-  currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar();
-  updateTotals();
-};
+function animateMonth(direction) {
+  calendarEl.style.opacity = "0";
+  calendarEl.style.transform = `translateX(${direction * 20}px)`;
 
-nextMonth.onclick = () => {
-  currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar();
-  updateTotals();
-};
+  setTimeout(() => {
+    currentDate.setMonth(currentDate.getMonth() + direction);
+    renderCalendar();
+    updateTotals();
+
+    calendarEl.style.transition = "none";
+    calendarEl.style.transform = `translateX(${-direction * 20}px)`;
+
+    requestAnimationFrame(() => {
+      calendarEl.style.transition = "all 0.25s ease";
+      calendarEl.style.opacity = "1";
+      calendarEl.style.transform = "translateX(0)";
+    });
+  }, 120);
+}

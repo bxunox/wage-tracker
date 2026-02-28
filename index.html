@@ -27,11 +27,12 @@
 
 <div class="totals">
 <div>Total Hours: <span id="totalHours">0</span></div>
-<div>Total Earnings: <span id="totalEarnings">€0</span></div>
+<div>Total Earnings: <span id="totalEarnings">0€</span></div>
 </div>
 
 <div id="entryModal" class="modal hidden">
 <div class="modal-content">
+
 <h3 id="entryDate" class="center-text"></h3>
 
 <label>Start</label>
@@ -40,14 +41,18 @@
 <label>End</label>
 <input type="time" id="endTime">
 
-<label>Break (min)</label>
-<input type="number" id="breakTime">
+<div class="break-row">
+<label>
+<input type="checkbox" id="breakToggle" checked>
+30 min break
+</label>
+</div>
 
 <label>Hourly €</label>
 <input type="number" id="hourlyWage" step="0.01">
 
 <p>Hours: <span id="workedHours">0</span></p>
-<p>Earnings: <span id="dailyEarnings">€0</span></p>
+<p>Earnings: <span id="dailyEarnings">0€</span></p>
 
 <div class="modal-buttons">
 <button id="saveEntry">Save</button>
