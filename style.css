@@ -269,3 +269,11 @@ top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
 }
+
+.modal-buttons {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-top: 12px;
+justify-content: center;
+}

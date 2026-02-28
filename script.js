@@ -112,9 +112,14 @@ function openEntry(key) {
   startTime.value = "16:00";
   endTime.value = "22:00";
 
+  // Always reset break to ON
   breakEnabled = true;
+  const breakCheckbox = document.getElementById("breakCheckbox");
+  if (breakCheckbox) {
+    breakCheckbox.checked = true;
+  }
 
-  // SATURDAY BONUS (6 = Saturday)
+  // Saturday bonus (6 = Saturday)
   if (date.getDay() === 6) {
     hourlyWage.value = "9.23";
   } else {
