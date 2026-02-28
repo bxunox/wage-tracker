@@ -1,70 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#222222" />
-<title>Wage Tracker</title>
-
-<link rel="stylesheet" href="style.css" />
-<link rel="manifest" href="manifest.json" />
-
-<!-- iOS PWA -->
-<link rel="apple-touch-icon" href="icon-192.png" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shift Tracker</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="app">
-
 <header>
-<button id="prevMonth">‹</button>
-<h1 id="monthLabel"></h1>
-<button id="nextMonth">›</button>
+<button id="prevMonth" class="secondary">‹</button>
+<div id="monthLabel"></div>
+<button id="nextMonth" class="secondary">›</button>
 </header>
+
+<div class="weekdays">
+<div>Mon</div>
+<div>Tue</div>
+<div>Wed</div>
+<div>Thu</div>
+<div>Fri</div>
+<div>Sat</div>
+<div>Sun</div>
+</div>
 
 <div id="calendar"></div>
 
 <div class="totals">
 <div>Total Hours: <span id="totalHours">0</span></div>
-<div>Total Earnings: <span id="totalEarnings">€0.00</span></div>
+<div>Total Earnings: <span id="totalEarnings">€0</span></div>
 </div>
 
-</div>
-
-<!-- Day Entry Modal -->
+<!-- MODAL -->
 <div id="entryModal" class="modal hidden">
 <div class="modal-content">
+<h3 id="entryDate" class="center-text"></h3>
 
-<h2 id="entryDate" class="center-text"></h2>
+<label>Start</label>
+<input type="time" id="startTime">
 
-<label>Start Time
-<input type="time" id="startTime" value="16:00">
-</label>
+<label>End</label>
+<input type="time" id="endTime">
 
-<label>End Time
-<input type="time" id="endTime" value="22:00">
-</label>
+<label>Break (min)</label>
+<input type="number" id="breakTime" value="0">
 
-<label>Break (minutes)
-<input type="number" id="breakTime" value="30" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
-</label>
+<label>Hourly €</label>
+<input type="number" id="hourlyWage" step="0.01">
 
-<label>Hourly Wage (€)
-<input type="number" id="hourlyWage" value="6.60" step="0.01" pattern="[0-9]*" inputmode="decimal">
-</label>
-
-<div class="result">
-Worked: <span id="workedHours">0</span> h<br>
-Earned: <span id="dailyEarnings">€0.00</span>
-</div>
+<p>Hours: <span id="workedHours">0</span></p>
+<p>Earnings: <span id="dailyEarnings">€0</span></p>
 
 <div class="modal-buttons">
 <button id="saveEntry">Save</button>
-<button id="deleteEntry" class="danger">Delete</button>
+<button id="deleteEntry" class="secondary">Delete</button>
 <button id="unavailableEntry" class="danger">Unavailable</button>
-<button id="closeModal" class="secondary">Cancel</button>
+<button id="closeModal" class="secondary">Close</button>
 </div>
 
 </div>

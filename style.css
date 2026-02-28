@@ -6,70 +6,54 @@ color: #e5e5e5;
 overflow-x: hidden;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header {
 display: flex;
 justify-content: space-between;
 align-items: center;
 padding: 14px 16px;
-font-size: 17px;
 }
 
 #monthLabel {
-font-size: 17px;
+font-size: 18px;
 font-weight: 600;
 white-space: nowrap;
 }
 
-/* ===== BUTTONS ===== */
-button {
-border: none;
-color: white;
-padding: 10px 14px;
-border-radius: 12px;
-font-size: 15px;
-cursor: pointer;
-transition: all 0.25s ease;
+/* WEEKDAYS */
+.weekdays {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+padding: 0 16px;
+margin-bottom: 10px;
+text-align: center;
+font-weight: 600;
+font-size: 14px;
+opacity: 0.8;
 }
 
-button:active {
-transform: scale(0.95);
-}
-
-.secondary { background: #3a3a3a; }
-.danger { background: #7a1f1f; }          /* darker red */
-#saveEntry { background: #2e7d32; }       /* green save */
-
-/* ===== CALENDAR ===== */
+/* CALENDAR */
 #calendar {
 display: grid;
 grid-template-columns: repeat(7, 1fr);
-gap: 10px;
-padding: 16px;
-min-height: 420px; /* prevents resizing */
-transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* smooth month animation */
-.calendar-slide-out {
-opacity: 0;
-transform: translateX(-10px);
-}
-.calendar-slide-in {
-opacity: 1;
-transform: translateX(0);
+gap: 8px;
+padding: 0 16px 16px 16px;
+width: 100%;
+box-sizing: border-box;
+min-height: 420px;
+transition: opacity 0.25s ease;
 }
 
 .day {
 background: #2c2c2c;
-border-radius: 16px;
+border-radius: 18px;
 display: flex;
 flex-direction: column;
-justify-content: flex-start;
 align-items: center;
-padding: 8px 4px;
-min-height: 75px; /* fixed height so no resizing */
-transition: all 0.25s ease;
+justify-content: flex-start;
+aspect-ratio: 1 / 1;
+padding-top: 6px;
+transition: background 0.25s ease, transform 0.2s ease;
 }
 
 .day:hover {
@@ -82,25 +66,41 @@ font-size: 15px;
 margin-bottom: 4px;
 }
 
-/* shift info stacked vertically */
 .day .info {
 font-size: 11px;
-margin-top: 2px;
-text-align: center;
 line-height: 1.2;
-word-break: break-word;
+text-align: center;
+margin-top: 4px;
 }
 
-/* ===== TOTALS ===== */
+/* TOTALS */
 .totals {
 padding: 16px;
 background: #2c2c2c;
 margin: 16px;
 border-radius: 18px;
-transition: all 0.3s ease;
 }
 
-/* ===== MODAL ===== */
+/* BUTTONS */
+button {
+border: none;
+color: white;
+padding: 10px 14px;
+border-radius: 12px;
+font-size: 15px;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+button:active {
+transform: scale(0.95);
+}
+
+.secondary { background: #3a3a3a; }
+.danger { background: #7a1f1f; }
+#saveEntry { background: #2e7d32; }
+
+/* MODAL */
 .modal {
 position: fixed;
 inset: 0;
@@ -109,7 +109,7 @@ backdrop-filter: blur(6px);
 display: flex;
 justify-content: center;
 align-items: center;
-animation: fadeIn 0.25s ease forwards;
+animation: fadeIn 0.25s ease;
 }
 
 .hidden { display: none; }
@@ -120,7 +120,7 @@ padding: 22px;
 border-radius: 24px;
 width: 90%;
 max-width: 400px;
-animation: slideUp 0.3s ease forwards;
+animation: slideUp 0.3s ease;
 }
 
 .center-text { text-align: center; }
@@ -133,13 +133,14 @@ border: none;
 background: #3a3a3a;
 color: white;
 font-size: 15px;
+margin-bottom: 6px;
 }
 
 .modal-buttons {
 display: flex;
 flex-wrap: wrap;
 gap: 8px;
-margin-top: 15px;
+margin-top: 12px;
 }
 
 @keyframes fadeIn {

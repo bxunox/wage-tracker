@@ -29,10 +29,8 @@ renderCalendar();
 updateTotals();
 });
 
-/* ===== CALENDAR ===== */
-
 function renderCalendar() {
-calendarEl.classList.add("calendar-slide-out");
+calendarEl.style.opacity = 0;
 
 setTimeout(() => {
 calendarEl.innerHTML = "";
@@ -41,15 +39,6 @@ const year = currentDate.getFullYear();
 const month = currentDate.getMonth();
 monthLabel.textContent =
 currentDate.toLocaleString("default", { month: "long", year: "numeric" });
-
-const daysOfWeek = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-daysOfWeek.forEach(d => {
-const header = document.createElement("div");
-header.textContent = d;
-header.style.textAlign = "center";
-header.style.fontWeight = "600";
-calendarEl.appendChild(header);
-});
 
 const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
 const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -89,13 +78,10 @@ day.onclick = () => openEntry(key);
 calendarEl.appendChild(day);
 }
 
-calendarEl.classList.remove("calendar-slide-out");
-calendarEl.classList.add("calendar-slide-in");
+calendarEl.style.opacity = 1;
 
 }, 150);
 }
-
-/* ===== ENTRY MODAL ===== */
 
 function openEntry(key) {
 selectedDateKey = key;
@@ -126,12 +112,10 @@ dailyEarnings.textContent =
 
 saveEntryBtn.onclick = () => {
 const entries = getEntries();
-
 entries[selectedDateKey] = {
 hoursWorked: parseFloat(workedHours.textContent),
 pay: parseFloat(dailyEarnings.textContent.replace("€",""))
 };
-
 saveEntries(entries);
 entryModal.classList.add("hidden");
 renderCalendar();
@@ -160,8 +144,6 @@ closeModalBtn.onclick = () => {
 entryModal.classList.add("hidden");
 };
 
-/* ===== TOTALS ===== */
-
 function updateTotals() {
 const entries = getEntries();
 let totalH = 0, totalP = 0;
@@ -182,8 +164,6 @@ totalP += e.pay || 0;
 totalHoursEl.textContent = totalH.toFixed(2);
 totalEarningsEl.textContent = "€" + totalP.toFixed(2);
 }
-
-/* ===== MONTH SWITCH ===== */
 
 prevMonth.onclick = () => {
 currentDate.setMonth(currentDate.getMonth()-1);
