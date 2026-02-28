@@ -53,7 +53,7 @@ display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: flex-start;
-height: 70px; /* FIXED HEIGHT – no resizing */
+height: 70px;
 padding-top: 6px;
 transition: background 0.2s ease, transform 0.2s ease;
 }
@@ -68,7 +68,7 @@ font-size: 14px;
 margin-bottom: 3px;
 }
 
-/* SHIFT / STATUS BADGE */
+/* BADGES */
 .badge {
 padding: 4px 6px;
 border-radius: 8px;
@@ -79,13 +79,11 @@ margin-top: 4px;
 min-width: 38px;
 }
 
-/* Normal shift background */
 .badge-shift {
-background: #3a3a3a; /* slightly lighter than day */
+background: #3a3a3a;
 color: #e5e5e5;
 }
 
-/* Unavailable indicator */
 .badge-unavailable {
 background: #c62828;
 height: 12px;
@@ -118,8 +116,8 @@ transform: scale(0.96);
 }
 
 .secondary { background: #3a3a3a; }
-.danger { background: #c62828; }        /* delete red */
-.danger-dark { background: #3a3a3a; }   /* unavailable darker */
+.danger { background: #c62828; }
+.danger-dark { background: #7a1f1f; }
 #saveEntry { background: #2e7d32; }
 
 /* MODAL */
