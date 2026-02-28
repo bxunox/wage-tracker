@@ -1,9 +1,5 @@
-/* ================= STORAGE ================= */
-
 const getEntries = () => JSON.parse(localStorage.getItem("entries") || "{}");
 const saveEntries = (data) => localStorage.setItem("entries", JSON.stringify(data));
-
-/* ================= ELEMENTS ================= */
 
 const calendarEl = document.getElementById("calendar");
 const monthLabel = document.getElementById("monthLabel");
@@ -31,14 +27,12 @@ const closeModalBtn = document.getElementById("closeModal");
 let currentDate = new Date();
 let selectedDateKey = null;
 
-/* ================= INIT ================= */
-
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
   updateTotals();
 });
 
-/* ================= CALENDAR ================= */
+/* ================= RENDER CALENDAR ================= */
 
 function renderCalendar() {
   calendarEl.innerHTML = "";
@@ -49,7 +43,7 @@ function renderCalendar() {
   monthLabel.textContent =
     currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
-  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Monday first
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const entries = getEntries();
 
@@ -67,13 +61,6 @@ function renderCalendar() {
     number.textContent = d;
     day.appendChild(number);
 
-    const jsDate = new Date(year, month, d);
-
-    // Sunday style
-    if (jsDate.getDay() === 0) {
-      day.classList.add("sunday");
-    }
-
     const entry = entries[key];
 
     if (entry) {
@@ -85,7 +72,7 @@ function renderCalendar() {
         const badge = document.createElement("div");
         badge.className = "badge badge-shift";
         badge.innerHTML =
-          `${entry.hoursWorked.toFixed(2)}h<br>${entry.pay.toFixed(2)}€`;
+          `${entry.hoursWorked.toFixed(2)}h<br>€${entry.pay.toFixed(2)}`;
         day.appendChild(badge);
       }
     }
@@ -106,6 +93,7 @@ function openEntry(key) {
 
   const date = new Date(y, m - 1, d);
 
+  // Default values
   startTime.value = "16:00";
   endTime.value = "22:00";
   breakTime.value = 30;
@@ -128,13 +116,13 @@ function calculate() {
   workedHours.textContent = diff.toFixed(2);
 
   const pay = diff * parseFloat(hourlyWage.value || 0);
-  dailyEarnings.textContent = pay.toFixed(2) + "€";
+  dailyEarnings.textContent = "€" + pay.toFixed(2);
 }
 
 [startTime, endTime, breakTime, hourlyWage]
   .forEach(el => el.oninput = calculate);
 
-/* ================= DAY POP ================= */
+/* ================= DAY POP ANIMATION ================= */
 
 function animateUpdatedDay() {
   const [y, m, d] = selectedDateKey.split("-");
@@ -143,6 +131,7 @@ function animateUpdatedDay() {
 
   if (parseInt(y) === year && parseInt(m) === month) {
     const days = document.querySelectorAll(".day");
+
     days.forEach(day => {
       if (day.querySelector(".day-number")?.textContent === d) {
         day.classList.add("pop");
@@ -152,7 +141,7 @@ function animateUpdatedDay() {
   }
 }
 
-/* ================= CLOSE ================= */
+/* ================= SMOOTH CLOSE ================= */
 
 function closeModalSmooth() {
   entryModal.classList.add("closing");
@@ -164,8 +153,6 @@ function closeModalSmooth() {
     modalContent.classList.remove("closing");
   }, 200);
 }
-
-closeModalBtn.onclick = () => closeModalSmooth();
 
 /* ================= SAVE ================= */
 
@@ -214,6 +201,12 @@ deleteEntryBtn.onclick = () => {
   closeModalSmooth();
 };
 
+/* ================= CLOSE BUTTON ================= */
+
+closeModalBtn.onclick = () => {
+  closeModalSmooth();
+};
+
 /* ================= TOTALS ================= */
 
 function updateTotals() {
@@ -235,30 +228,19 @@ function updateTotals() {
   }
 
   totalHoursEl.textContent = totalH.toFixed(2);
-  totalEarningsEl.textContent = totalP.toFixed(2) + "€";
+  totalEarningsEl.textContent = "€" + totalP.toFixed(2);
 }
 
-/* ================= MONTH ANIMATION ================= */
+/* ================= MONTH NAVIGATION ================= */
 
-function animateMonthChange(direction) {
-  calendarEl.style.opacity = "0";
-  calendarEl.style.transform = `translateX(${direction * 20}px)`;
+prevMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+  updateTotals();
+};
 
-  setTimeout(() => {
-    currentDate.setMonth(currentDate.getMonth() + direction);
-    renderCalendar();
-    updateTotals();
-
-    calendarEl.style.transition = "none";
-    calendarEl.style.transform = `translateX(${-direction * 20}px)`;
-
-    requestAnimationFrame(() => {
-      calendarEl.style.transition = "all 0.3s ease";
-      calendarEl.style.opacity = "1";
-      calendarEl.style.transform = "translateX(0)";
-    });
-  }, 150);
-}
-
-prevMonth.onclick = () => animateMonthChange(-1);
-nextMonth.onclick = () => animateMonthChange(1);
+nextMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+  updateTotals();
+};
