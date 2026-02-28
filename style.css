@@ -9,8 +9,8 @@ header {
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 16px;
-font-size: 20px;
+padding: 12px 16px;
+font-size: 18px; /* smaller month/year */
 }
 
 button {
@@ -41,6 +41,7 @@ display: grid;
 grid-template-columns: repeat(7, 1fr);
 gap: 8px;
 padding: 16px;
+justify-items: center; /* center days horizontally */
 }
 
 .day {
@@ -53,6 +54,7 @@ display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
+min-height: 60px;
 transition: transform 0.2s ease, background 0.2s ease;
 }
 
@@ -67,6 +69,7 @@ padding: 2px 6px;
 border-radius: 10px;
 margin-top: 4px;
 font-size: 12px;
+white-space: nowrap;
 }
 
 .totals {
@@ -77,14 +80,19 @@ border-radius: 16px;
 transition: all 0.3s ease;
 }
 
+.center-text {
+text-align: center;
+}
+
 .modal {
 position: fixed;
 inset: 0;
-background: rgba(0,0,0,0.8);
+background: rgba(0,0,0,0.7);
 display: flex;
 justify-content: center;
 align-items: center;
 animation: fadeIn 0.3s ease;
+backdrop-filter: blur(4px); /* smooth darkening */
 }
 
 .hidden {
@@ -122,8 +130,10 @@ font-weight: bold;
 
 .modal-buttons {
 display: flex;
+flex-wrap: wrap;
 justify-content: space-between;
 margin-top: 15px;
+gap: 8px;
 }
 
 @keyframes fadeIn {

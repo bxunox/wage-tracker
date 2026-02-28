@@ -13,7 +13,6 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
 </head>
 <body>
 
@@ -32,15 +31,13 @@
 <div>Total Earnings: <span id="totalEarnings">€0.00</span></div>
 </div>
 
-<button id="openTemplates" class="secondary">Templates</button>
-
 </div>
 
 <!-- Day Entry Modal -->
 <div id="entryModal" class="modal hidden">
 <div class="modal-content">
 
-<h2 id="entryDate"></h2>
+<h2 id="entryDate" class="center-text"></h2>
 
 <label>Start Time
 <input type="time" id="startTime" value="16:00">
@@ -66,21 +63,10 @@ Earned: <span id="dailyEarnings">€0.00</span>
 <div class="modal-buttons">
 <button id="saveEntry">Save</button>
 <button id="deleteEntry" class="danger">Delete</button>
+<button id="unavailableEntry" class="danger">Unavailable</button>
 <button id="closeModal" class="secondary">Cancel</button>
 </div>
 
-</div>
-</div>
-
-<!-- Templates Modal -->
-<div id="templatesModal" class="modal hidden">
-<div class="modal-content">
-<h2>Templates</h2>
-
-<div id="templatesList"></div>
-
-<button id="addTemplate">+ Add Template</button>
-<button id="closeTemplates" class="secondary">Close</button>
 </div>
 </div>
 
