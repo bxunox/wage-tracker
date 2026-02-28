@@ -30,9 +30,6 @@ updateTotals();
 });
 
 function renderCalendar() {
-calendarEl.style.opacity = 0;
-
-setTimeout(() => {
 calendarEl.innerHTML = "";
 
 const year = currentDate.getFullYear();
@@ -77,10 +74,6 @@ day.appendChild(info);
 day.onclick = () => openEntry(key);
 calendarEl.appendChild(day);
 }
-
-calendarEl.style.opacity = 1;
-
-}, 150);
 }
 
 function openEntry(key) {
@@ -88,15 +81,22 @@ selectedDateKey = key;
 entryModal.classList.remove("hidden");
 
 const [y,m,d] = key.split("-");
-entryDateEl.textContent = `${parseInt(d)}.${parseInt(m)}.${y}`;
+entryDateEl.textContent = `${d}.${m}.${y}`;
 
 const date = new Date(y, m-1, d);
+
+/* DEFAULT VALUES */
+startTime.value = "16:00";
+endTime.value = "22:00";
+breakTime.value = 30;
 hourlyWage.value = (date.getDay() === 6) ? 9.23 : 6.6;
 
 calculate();
 }
 
 function calculate() {
+if (!startTime.value || !endTime.value) return;
+
 const start = new Date(`1970-01-01T${startTime.value}`);
 const end = new Date(`1970-01-01T${endTime.value}`);
 let diff = (end - start)/1000/60/60 - breakTime.value/60;

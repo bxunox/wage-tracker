@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Shift Tracker</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -30,7 +30,6 @@
 <div>Total Earnings: <span id="totalEarnings">€0</span></div>
 </div>
 
-<!-- MODAL -->
 <div id="entryModal" class="modal hidden">
 <div class="modal-content">
 <h3 id="entryDate" class="center-text"></h3>
@@ -42,7 +41,7 @@
 <input type="time" id="endTime">
 
 <label>Break (min)</label>
-<input type="number" id="breakTime" value="0">
+<input type="number" id="breakTime">
 
 <label>Hourly €</label>
 <input type="number" id="hourlyWage" step="0.01">
@@ -52,8 +51,8 @@
 
 <div class="modal-buttons">
 <button id="saveEntry">Save</button>
-<button id="deleteEntry" class="secondary">Delete</button>
-<button id="unavailableEntry" class="danger">Unavailable</button>
+<button id="deleteEntry" class="danger">Delete</button>
+<button id="unavailableEntry" class="danger-dark">Unavailable</button>
 <button id="closeModal" class="secondary">Close</button>
 </div>
 

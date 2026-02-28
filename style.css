@@ -1,3 +1,7 @@
+* {
+box-sizing: border-box;
+}
+
 body {
 margin: 0;
 font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -11,7 +15,7 @@ header {
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 14px 16px;
+padding: 14px;
 }
 
 #monthLabel {
@@ -24,8 +28,9 @@ white-space: nowrap;
 .weekdays {
 display: grid;
 grid-template-columns: repeat(7, 1fr);
-padding: 0 16px;
-margin-bottom: 10px;
+width: 100%;
+padding: 0 10px;
+margin-bottom: 8px;
 text-align: center;
 font-weight: 600;
 font-size: 14px;
@@ -35,25 +40,22 @@ opacity: 0.8;
 /* CALENDAR */
 #calendar {
 display: grid;
-grid-template-columns: repeat(7, 1fr);
-gap: 8px;
-padding: 0 16px 16px 16px;
+grid-template-columns: repeat(7, minmax(0, 1fr));
+gap: 6px;
 width: 100%;
-box-sizing: border-box;
-min-height: 420px;
-transition: opacity 0.25s ease;
+padding: 0 10px 16px 10px;
 }
 
 .day {
 background: #2c2c2c;
-border-radius: 18px;
+border-radius: 16px;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: flex-start;
-aspect-ratio: 1 / 1;
+height: 70px; /* FIXED HEIGHT – no resizing */
 padding-top: 6px;
-transition: background 0.25s ease, transform 0.2s ease;
+transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .day:hover {
@@ -62,23 +64,22 @@ transform: translateY(-2px);
 }
 
 .day-number {
-font-size: 15px;
-margin-bottom: 4px;
+font-size: 14px;
+margin-bottom: 3px;
 }
 
 .day .info {
-font-size: 11px;
+font-size: 10px;
 line-height: 1.2;
 text-align: center;
-margin-top: 4px;
 }
 
 /* TOTALS */
 .totals {
+margin: 16px 10px;
 padding: 16px;
 background: #2c2c2c;
-margin: 16px;
-border-radius: 18px;
+border-radius: 16px;
 }
 
 /* BUTTONS */
@@ -89,15 +90,16 @@ padding: 10px 14px;
 border-radius: 12px;
 font-size: 15px;
 cursor: pointer;
-transition: all 0.2s ease;
+transition: 0.2s ease;
 }
 
 button:active {
-transform: scale(0.95);
+transform: scale(0.96);
 }
 
 .secondary { background: #3a3a3a; }
-.danger { background: #7a1f1f; }
+.danger { background: #c62828; }        /* delete red */
+.danger-dark { background: #7a1f1f; }   /* unavailable darker */
 #saveEntry { background: #2e7d32; }
 
 /* MODAL */
@@ -109,7 +111,7 @@ backdrop-filter: blur(6px);
 display: flex;
 justify-content: center;
 align-items: center;
-animation: fadeIn 0.25s ease;
+animation: fadeIn 0.2s ease;
 }
 
 .hidden { display: none; }
@@ -117,23 +119,23 @@ animation: fadeIn 0.25s ease;
 .modal-content {
 background: #2c2c2c;
 padding: 22px;
-border-radius: 24px;
+border-radius: 20px;
 width: 90%;
 max-width: 400px;
-animation: slideUp 0.3s ease;
+animation: slideUp 0.25s ease;
 }
 
 .center-text { text-align: center; }
 
 input {
 width: 100%;
-padding: 9px;
-border-radius: 12px;
+padding: 8px;
+border-radius: 10px;
 border: none;
 background: #3a3a3a;
 color: white;
 font-size: 15px;
-margin-bottom: 6px;
+margin-bottom: 8px;
 }
 
 .modal-buttons {
