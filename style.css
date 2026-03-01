@@ -1,112 +1,120 @@
 * { box-sizing: border-box; }
 
 body {
-margin: 0;
-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-background: #1f1f1f;
-color: #e5e5e5;
-overflow-x: hidden;
-padding-top: 20px;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #1f1f1f;
+  color: #e5e5e5;
+  overflow-x: hidden;
+  padding-top: 30px; /* moved slightly down */
 }
 
 /* HEADER */
 header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
 }
 
 #monthLabel {
-font-size: 18px;
-font-weight: 600;
-white-space: nowrap;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* WEEKDAYS */
 .weekdays {
-display: grid;
-grid-template-columns: repeat(7, 1fr);
-width: 100%;
-padding: 0 10px;
-margin-bottom: 8px;
-text-align: center;
-font-weight: 600;
-font-size: 14px;
-opacity: 0.8;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  padding: 0 10px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 /* CALENDAR */
 #calendar {
-display: grid;
-grid-template-columns: repeat(7, minmax(0, 1fr));
-gap: 6px;
-width: 100%;
-padding: 0 10px 16px 10px;
-transition: all 0.25s ease;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  padding: 0 10px 16px 10px;
+  transition: all 0.25s ease;
 }
 
 .day {
-background: #2c2c2c;
-border-radius: 16px;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-height: 70px;
-transition: background 0.2s ease, transform 0.2s ease;
+  position: relative;
+  background: #2c2c2c;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 75px; /* slightly taller */
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .day:hover {
-background: #3a3a3a;
-transform: translateY(-2px);
+  background: #3a3a3a;
+  transform: translateY(-2px);
 }
 
 .day-number {
-font-size: 14px;
-margin-bottom: 3px;
+  position: absolute;
+  top: 6px;
+  font-size: 14px;
 }
 
 /* BADGES */
 .badge {
-padding: 4px 6px;
-border-radius: 8px;
-font-size: 10px;
-line-height: 1.2;
-text-align: center;
-margin-top: 4px;
-min-width: 38px;
+  margin-top: 28px; /* keeps number stable */
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: center;
+  min-width: 38px;
 }
 
 .badge-shift {
-background: #3a3a3a;
-color: #e5e5e5;
+  background: #3a3a3a;
+  color: #e5e5e5;
 }
 
 .badge-unavailable {
-background: #c62828;
-height: 14px;
-width: 60%;
-border-radius: 8px;
+  background: #c62828;
+  height: 18px;
+  width: 80%;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* TOTALS */
 .totals {
-margin: 16px 10px;
-padding: 16px;
-background: #2c2c2c;
-border-radius: 16px;
+  margin: 16px 10px;
+  padding: 16px;
+  background: #2c2c2c;
+  border-radius: 16px;
 }
 
 /* BUTTONS */
 button {
-border: none;
-color: white;
-padding: 10px 14px;
-border-radius: 12px;
-font-size: 15px;
-cursor: pointer;
-transition: 0.2s ease;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button:active { transform: scale(0.96); }
@@ -114,166 +122,141 @@ button:active { transform: scale(0.96); }
 .secondary { background: #3a3a3a; }
 .danger { background: #c62828; }
 .danger-dark { background: #7a1f1f; }
-#saveEntry { background: #2e7d32; }
 
-.modal-buttons {
-display: flex;
-gap: 8px;
-justify-content: center;
-align-items: center;
-flex-wrap: wrap;
-margin-top: 12px;
-}
-
-.modal-buttons button {
-flex: 1;
-min-width: 90px;
+#saveEntry {
+  background: #2e7d32;
 }
 
 /* MODAL */
 .modal {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.6);
-backdrop-filter: blur(6px);
-display: flex;
-justify-content: center;
-align-items: center;
-animation: fadeIn 0.2s ease;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease;
 }
 
 .hidden { display: none; }
 
 .modal-content {
-background: #2c2c2c;
-padding: 22px;
-border-radius: 20px;
-width: 90%;
-max-width: 400px;
-animation: slideUp 0.25s ease;
-text-align: center;
+  background: #2c2c2c;
+  padding: 24px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  animation: slideUp 0.25s ease;
+  text-align: center;
 }
 
-.center-text { text-align: center; }
+/* INPUTS (centered properly now) */
+.modal input[type="time"],
+.modal input[type="number"] {
+  width: 85%;
+  margin: 8px auto;
+  display: block;
 
-input {
-width: 100%;
-padding: 8px;
-border-radius: 10px;
-border: none;
-background: #3a3a3a;
-color: white;
-font-size: 15px;
-margin-bottom: 8px;
-text-align: center;
+  background: #3a3a3a;
+  border: none;
+  border-radius: 14px;
+
+  padding: 12px 0;
+  text-align: center;
+
+  color: white;
+  font-size: 18px;
 }
 
-input[type="time"] {
-display: block;
-margin: 0 auto;
+/* BREAK ROW */
+.break-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
 }
 
-.break-row {
-margin: 10px 0;
+.break-container label {
+  font-size: 18px; /* same visual weight */
+  margin: 0;
 }
 
+/* CUSTOM CHECKBOX */
+input[type="checkbox"] {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #3a3a3a;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background: #2e7d32;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* SUMMARY */
+.summary p {
+  margin: 4px 0; /* brings Hours & Earnings closer */
+}
+
+/* MODAL BUTTONS */
+.modal-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-buttons button {
+  flex: 1;
+  min-width: 90px;
+}
+
+/* ANIMATIONS */
 @keyframes fadeIn {
-from { opacity: 0; }
-to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
-from { transform: translateY(20px); opacity: 0; }
-to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .modal.closing { animation: fadeOut 0.2s ease forwards; }
 .modal-content.closing { animation: slideDown 0.2s ease forwards; }
 
 @keyframes fadeOut {
-from { opacity: 1; }
-to { opacity: 0; }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes slideDown {
-from { transform: translateY(0); opacity: 1; }
-to { transform: translateY(20px); opacity: 0; }
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(20px); opacity: 0; }
 }
 
 .day.pop { animation: popIn 0.25s ease; }
 
 @keyframes popIn {
-0% { transform: scale(0.9); opacity: 0.6; }
-60% { transform: scale(1.05); }
-100% { transform: scale(1); opacity: 1; }
-}
-
-.day {
-position: relative;
-justify-content: flex-start;
-}
-
-.day-number {
-position: absolute;
-top: 6px;
-font-size: 14px;
-}
-
-.badge {
-margin-top: 26px;
-}
-
-.badge-unavailable {
-display: flex;
-align-items: center;
-justify-content: center;
-height: 18px;
-width: 80%;
-font-size: 10px;
-}
-
-.break-container {
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-margin: 10px 0;
-}
-
-.break-container label {
-margin: 0;
-font-size: 14px;
-}
-
-input[type="checkbox"] {
-appearance: none;
-width: 22px;
-height: 22px;
-border-radius: 6px;
-background: #3a3a3a;
-cursor: pointer;
-position: relative;
-transition: 0.2s ease;
-}
-
-input[type="checkbox"]:checked {
-background: #2e7d32;
-}
-
-input[type="checkbox"]:checked::after {
-content: "✓";
-position: absolute;
-color: white;
-font-size: 14px;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-}
-
-.modal-buttons {
-display: flex;
-flex-wrap: wrap;
-gap: 8px;
-margin-top: 12px;
-justify-content: center;
+  0% { transform: scale(0.9); opacity: 0.6; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
 }
